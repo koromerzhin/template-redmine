@@ -1,0 +1,25 @@
+version: "3.4"
+
+volumes: 
+  mariadb_data:
+
+networks:
+  proxynetwork:
+    external: true
+  net:
+    driver: overlay
+    attachable: true
+
+services:
+  wwww:
+    image: redmine:4.1.1
+    networks:
+      - net
+      - proxynetwork
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.redmine.rule=Host(`redmine.traefik.me`)"
+        - "traefik.http.routers.redmine-tls.tls.domains[0].main=redmine.traefik.me"
+        - "traefik.http.routers.redmine-tls.tls.domains[0].sans=redmine-*.traefik.me"
+        - "traefik.http.services.redmine.loadbalancer.server.port=3000"
