@@ -1,4 +1,6 @@
-git.DEFAULT_GOAL := help
+isDocker := $(shell docker info > /dev/null 2>&1 && echo 1)
+
+.DEFAULT_GOAL := help
 STACK         := redmine
 NETWORK       := proxynetwork
 
@@ -11,9 +13,6 @@ ifneq "$(SUPPORTS_MAKE_ARGS)" ""
   COMMAND_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
   $(eval $(COMMAND_ARGS):;@:)
 endif
-
-%:
-	@:
 
 help:
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-30s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
@@ -28,7 +27,13 @@ install: node_modules ## Installation application
 	@make docker image-pull
 	@make docker deploy
 
-logs: ## Scripts logs
+isdocker: ## Docker is launch
+ifeq ($(isDocker), 0)
+	@echo "Docker is not launch"
+	exit 1
+endif
+
+logs: isdocker ## Scripts logs
 ifeq ($(COMMAND_ARGS),redmine)
 	@docker service logs -f --tail 100 --raw $(REDMINEFULLNAME)
 else
@@ -39,7 +44,7 @@ else
 	@echo "redmine: redmine"
 endif
 
-ssh: ## SSH
+ssh: isdocker ## SSH
 ifeq ($(COMMAND_ARGS),redmine)
 	@docker exec -it $(REDMINEFULLNAME) /bin/bash
 else
@@ -50,7 +55,7 @@ else
 	@echo "redmine: REDMINE"
 endif
 
-docker: ## Scripts docker
+docker: isdocker ## Scripts docker
 ifeq ($(COMMAND_ARGS),create-network)
 	@docker network create --driver=overlay $(NETWORK)
 else ifeq ($(COMMAND_ARGS),deploy)
@@ -73,7 +78,7 @@ else
 	@echo "stop: docker stop"
 endif
 
-contributors: ## Contributors
+contributors: node_modules ## Contributors
 ifeq ($(COMMAND_ARGS),add)
 	@npm run contributors add
 else ifeq ($(COMMAND_ARGS),check)
@@ -84,7 +89,7 @@ else
 	@npm run contributors
 endif
 
-git: ## Scripts GIT
+git: node_modules ## Scripts GIT
 ifeq ($(COMMAND_ARGS),commit)
 	@npm run commit
 else ifeq ($(COMMAND_ARGS),status)
@@ -102,7 +107,7 @@ else
 	@echo "status: status"
 endif
 
-linter: ## Scripts Linter
+linter: node_modules ## Scripts Linter
 ifeq ($(COMMAND_ARGS),all)
 	@make linter readme -i
 else ifeq ($(COMMAND_ARGS),readme)
@@ -116,7 +121,7 @@ else
 	@echo "readme: linter README.md"
 endif
 
-inspect: ## docker service inspect
+inspect: isdocker ## docker service inspect
 ifeq ($(COMMAND_ARGS),redmine)
 	@docker service inspect $(redmine)
 else
@@ -127,7 +132,7 @@ else
 	@echo "redmine: redmine"
 endif
 
-update: ## docker service update
+update: isdocker ## docker service update
 ifeq ($(COMMAND_ARGS),redmine)
 	@docker service update $(REDMINE)
 else ifeq ($(COMMAND_ARGS),mariadb)
