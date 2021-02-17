@@ -27,6 +27,7 @@ install: node_modules ## Installation application
 	@make docker image-pull
 	@make docker deploy
 
+.PHONY: isdocker
 isdocker: ## Docker is launch
 ifeq ($(isDocker), 0)
 	@echo "Docker is not launch"
