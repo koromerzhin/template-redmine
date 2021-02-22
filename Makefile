@@ -24,8 +24,8 @@ node_modules: package-lock.json
 	@npm install
 
 install: node_modules ## Installation application
-	@make docker image-pull
-	@make docker deploy
+	@make docker image-pull -i
+	@make docker deploy -i
 
 .PHONY: isdocker
 isdocker: ## Docker is launch
@@ -63,6 +63,9 @@ else ifeq ($(COMMAND_ARGS),deploy)
 	@docker stack deploy -c docker-compose.yml $(STACK)
 else ifeq ($(COMMAND_ARGS),image-pull)
 	@docker image pull redmine:4.1.1
+	@docker image pull phpmyadmin/phpmyadmin
+	@docker image pull mailhog/mailhog
+	@docker image pull mariadb:10.5.6
 else ifeq ($(COMMAND_ARGS),ls)
 	@docker stack services $(STACK)
 else ifeq ($(COMMAND_ARGS),stop)
