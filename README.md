@@ -29,6 +29,8 @@ docker swarm
 Hosts:
 
 - redmine.traefik.me
+- phpmyadmin-redmine.traefik.me
+- mailhog-redmine.traefik.me
 
 ## Install
 
