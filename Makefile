@@ -65,7 +65,7 @@ else ifeq ($(COMMAND_ARGS),image-pull)
 	@docker image pull redmine:4.1.1
 	@docker image pull phpmyadmin/phpmyadmin
 	@docker image pull mailhog/mailhog
-	@docker image pull mariadb:10.5.8
+	@docker image pull mariadb:10.5.9
 else ifeq ($(COMMAND_ARGS),ls)
 	@docker stack services $(STACK)
 else ifeq ($(COMMAND_ARGS),stop)
