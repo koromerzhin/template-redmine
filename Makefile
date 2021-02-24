@@ -7,7 +7,7 @@ NETWORK       := proxynetwork
 REDMINE         := $(STACK)_www
 REDMINEFULLNAME := $(REDMINE).1.$$(docker service ps -f 'name=$(REDMINE)' $(REDMINE) -q --no-trunc | head -n1)
 
-SUPPORTED_COMMANDS := contributors git linter docker logs ssh inspect update
+SUPPORTED_COMMANDS := contributors git linter docker logs ssh inspect update sleep
 SUPPORTS_MAKE_ARGS := $(findstring $(firstword $(MAKECMDGOALS)), $(SUPPORTED_COMMANDS))
 ifneq "$(SUPPORTS_MAKE_ARGS)" ""
   COMMAND_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
@@ -54,6 +54,10 @@ else
 	@echo "---"
 	@echo "redmine: REDMINE"
 endif
+
+.PHONY: sleep
+sleep: ## sleep
+	@sleep  $(COMMAND_ARGS)
 
 docker: isdocker ## Scripts docker
 ifeq ($(COMMAND_ARGS),create-network)
