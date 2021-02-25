@@ -20,7 +20,12 @@ help:
 node_modules:
 	@npm install
 
-install: node_modules ## Installation application
+dump:
+	@mkdir dump
+
+folders: dump ## Create folder
+
+install: folders node_modules ## Installation application
 	@make docker deploy -i
 
 .PHONY: isdocker
