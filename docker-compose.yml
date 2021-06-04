@@ -57,7 +57,7 @@ services:
         - "traefik.http.routers.phpmyadmin-redmine-tls.tls.domains[0].sans=phpmyadmin-redmine-*.traefik.me"
         - "traefik.http.services.phpmyadmin-redmine.loadbalancer.server.port=80"
   wwww:
-    image: redmine:4.1.2
+    image: redmine:4.2.1
     networks:
       - net
       - proxynetwork
