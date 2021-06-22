@@ -24,7 +24,7 @@ services:
         - "traefik.http.routers.mailhog-redmine-tls.tls.domains[0].sans=mailhog-redmine-*.traefik.me"
         - "traefik.http.services.mailhog-redmine.loadbalancer.server.port=8025"
   mariadb:
-    image: mariadb:10.6.1
+    image: mariadb:10.6.2
     environment:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_DATABASE: core
